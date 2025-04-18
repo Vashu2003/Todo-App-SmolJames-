@@ -1,0 +1,46 @@
+### Get /
+GET http://localhost:8383
+
+### Post /register
+POST http://localhost:8383/auth/register
+Content-Type: application/json
+
+{
+    "username": "test@gmail.com",
+    "password": "123456"
+}
+
+### Post /login
+POST http://localhost:8383/auth/login
+Content-Type: application/json
+
+{
+    "username": "test@gmail.com",
+    "password": "123456"
+}
+
+### Get /todos (protected) 
+GET http://localhost:8383/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0OTczODIyLCJleHAiOjE3NDUwNjAyMjJ9.XWN2p8dFco8JElq5n-S8oPoXXF5eEYBIaujHdgmLPCA
+
+### Create a new todo (protected) 
+POST http://localhost:8383/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0OTczODIyLCJleHAiOjE3NDUwNjAyMjJ9.XWN2p8dFco8JElq5n-S8oPoXXF5eEYBIaujHdgmLPCA
+Content-Type: application/json
+
+{
+    "task": "Learn Go"
+}
+
+### Update a todo (protected)
+PUT http://localhost:8383/todos/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0OTczODIyLCJleHAiOjE3NDUwNjAyMjJ9.XWN2p8dFco8JElq5n-S8oPoXXF5eEYBIaujHdgmLPCA
+Content-Type: application/json
+
+{
+    "completed": 1
+}
+
+### Delete a todo (protected)
+DELETE http://localhost:8383/todos/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ0OTczODIyLCJleHAiOjE3NDUwNjAyMjJ9.XWN2p8dFco8JElq5n-S8oPoXXF5eEYBIaujHdgmLPCA
