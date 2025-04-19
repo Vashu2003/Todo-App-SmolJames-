@@ -5,14 +5,18 @@ const router = express.Router();
 
 // Get all todos for a user
 router.get('/', async (req, res) => {
-    const todos = prisma.todo.findMany({
-        where: {
-            userId: req.userId
-        }
-    });
+    try {
+        const todos = await prisma.todo.findMany({
+            where: { userId: req.userId }
+        });
 
-    res.json({ message : 'All todos fetched successfully' ,todos });
-}); 
+        res.json(todos); // ✅ return only the array, not an object
+    } catch (err) {
+        console.error('❌ Error fetching todos:', err.message);
+        res.status(500).json({ message: 'Failed to fetch todos' });
+    }
+});
+
 
 // create a new todo for a user
 router.post('/', async (req, res) => {
@@ -20,12 +24,12 @@ router.post('/', async (req, res) => {
     
     const todo = await prisma.todo.create({
         data: {
-            title: task,
+            task: task,
             userId: req.userId
         }
     });
 
-    res.status(201).json({ message: 'Todo created successfully', todo }); 
+    res.status(201).json(todo); 
 });
 
 // Update a todo for a user
@@ -41,7 +45,7 @@ router.put('/:id', async (req, res) => {
             completed: !!completed
         }
     });
-    res.json({ message : 'Todo updated successfully', updatedTodo });
+    res.json(updatedTodo);
 
 
 });

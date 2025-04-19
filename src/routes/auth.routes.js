@@ -3,42 +3,53 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import prisma from '../prisma.Client.js'
 
-const router = express.Router()
 
-// Register a new user endpoing /auth/register
+const router = express.Router();
+
 router.post('/register', async (req, res) => {
     const { username, password } = req.body
-    // save the username and an irreversibly encrypted password
-    // save gilgamesh@gmail.com | aklsdjfasdf.asdf..qwe..q.we...qwe.qw.easd
 
-    // encrypt the password
-    const hashedPassword = bcrypt.hashSync(password, 8)
-
-    // save the new user and hashed password to the db
     try {
+        // check for existing user
+        const existingUser = await prisma.user.findUnique({
+            where: { username }
+        })
+
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists." })
+        }
+
+        // encrypt the password
+        const hashedPassword = bcrypt.hashSync(password, 8)
+
+        // create the user
         const user = await prisma.user.create({
             data: {
-                username: username,
+                username,
                 password: hashedPassword 
             }
         })
 
-        // now that we have a user, I want to add their first todo for them
+        // add a welcome todo
         await prisma.todo.create({
             data: {
-                title: "Hello :) Add your first todo!",
+                task: "Get started by writing your first task!",
                 userId: user.id
             }
         })
 
-        // create a token
+        // create token
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' })
         res.json({ token })
+        console.log("User registered successfully:", user); // Log successful registration
+        
+
     } catch (err) {
-        console.log(err.message)
-        res.sendStatus(503)
+        console.error("❌ Registration error:", err); // Log full error
+        res.status(503).json({ message: "Service Unavailable" });
     }
 })
+
 
 router.post('/login', async (req, res) => {
     // we get their email, and we look up the password associated with that email in the database
@@ -63,6 +74,7 @@ router.post('/login', async (req, res) => {
         // then we have a successful authentication
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' })
         res.json({ token })
+        log("User logged in successfully:", user); // Log successful login
     } catch (err) {
         console.log(err.message)
         res.sendStatus(503)

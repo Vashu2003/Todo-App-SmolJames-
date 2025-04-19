@@ -43,7 +43,8 @@ h1 {
 }
 
 .tab-container {
-    overflow-x: auto;
+    overflow: hidden;
+    display: flex;
 }
 
 .tab-button {

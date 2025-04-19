@@ -8,7 +8,13 @@ import router from './routes/auth.routes.js';
 import todoRouter from './routes/todo.routes.js';
 import authMiddleware from './middleware/auth.middleware.js';
 
+import cors from 'cors';
+
+console.log('Loaded JWT_SECRET:', process.env.JWT_SECRET);
+
+
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 8383;
 
 // Get the file name from the URL of the current module
